@@ -1,12 +1,15 @@
 package main
 
 import (
-	"fmt"
+	"time"
+
+	"github.com/abdielrumaldo/pokedex/internal/pokeapi"
 )
 
-func cleanInput(text string) []string {
-	return []string{}
-}
 func main() {
-	fmt.Print("Hello, World!")
+	pokeClient := pokeapi.NewClient(5 * time.Second)
+	cfg := &config{
+		pokeapiClient: pokeClient,
+	}
+	startRepl(cfg)
 }
