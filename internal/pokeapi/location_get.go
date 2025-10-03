@@ -7,50 +7,46 @@ import (
 	"net/http"
 )
 
-func (c *Client) ListLocations(pageUrl *string) (locationAreaResult, error) {
+func (c *Client) GetLocation(area string) (LocationResult, error) {
 
-	url := baseUrl + "/location-area?offset=0&limit=20"
-	if pageUrl != nil {
-		url = *pageUrl
-	}
+	url := baseUrl + "/location-area/" + area
+	locationResp := LocationResult{}
+
 	cachedResp, ok := c.httpCache.Get(url)
-	newVar := locationAreaResult{}
 	if ok != false {
-		locationResp := newVar
 		err := json.Unmarshal(cachedResp, &locationResp)
 		if err != nil {
-			return newVar, err
+			return LocationResult{}, err
 		}
 		return locationResp, nil
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return newVar, err
+		return locationResp, err
 	}
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return newVar, err
+		return locationResp, err
 	}
-
 	if resp.StatusCode != 200 {
-		return newVar, fmt.Errorf("Could not get locations. Error Code %v", resp.Status)
+		return locationResp, fmt.Errorf("Area '%s': not found", area)
 	}
 	defer resp.Body.Close()
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return newVar, err
+		return locationResp, err
 	}
 
 	// add to cache
 	c.httpCache.Add(url, data)
 
-	err = json.Unmarshal(data, &newVar)
+	err = json.Unmarshal(data, &locationResp)
 	if err != nil {
-		return newVar, err
+		return locationResp, err
 	}
 
-	return newVar, nil
+	return locationResp, err
 }

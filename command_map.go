@@ -5,9 +5,8 @@ import (
 	"fmt"
 )
 
-func commandMapf(cfg *config) error {
+func commandMapf(cfg *config, input []string) error {
 
-	fmt.Printf("Config: %v \n", cfg)
 	locationResp, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationUrl)
 	if err != nil {
 		return err
@@ -22,9 +21,8 @@ func commandMapf(cfg *config) error {
 	return nil
 }
 
-func commandMapb(cfg *config) error {
+func commandMapb(cfg *config, input []string) error {
 
-	fmt.Printf("Config: %v \n", cfg)
 	if cfg.previousLocationUrl == nil {
 		return errors.New("you're on the first page")
 	}

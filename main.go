@@ -1,9 +1,8 @@
 package main
 
 import (
-	"time"
-
 	"github.com/abdielrumaldo/pokedex/internal/pokeapi"
+	"time"
 )
 
 func main() {
